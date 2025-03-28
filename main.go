@@ -35,7 +35,7 @@ func main() {
 	}
 	// Call the decorated function
 	res := decoratedGenAndSortBigArrayOfInt(2025)
-	fmt.Println(len(res))
+	fmt.Println(len(res), res[len(res)-1])
 
 	decoratedGenAndSortBigArrayOfInt, ok = PutCravat(timingDecorator, SliceWithSleep)
 
@@ -45,5 +45,15 @@ func main() {
 
 	// Call the decorated function
 	res = decoratedGenAndSortBigArrayOfInt(2025)
-	fmt.Println(len(res))
+	fmt.Println(len(res), res[len(res)-1])
+
+	decoratedGenAndSortBigArrayOfInt, ok = SimplerTimerAddExtra(SliceWithSleep, 500)
+
+	if !ok {
+		slog.Error("main/decorator", slog.String("error", "Failed to set decorator"))
+	}
+
+	// Call the decorated function
+	res = decoratedGenAndSortBigArrayOfInt(2025)
+	fmt.Println(len(res), res[len(res)-1])
 }
