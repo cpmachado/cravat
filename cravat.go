@@ -1,10 +1,11 @@
-package main
+package cravat
 
 import "reflect"
 
-// Cravat sets a code block to be run before a call, and one for afterwords
+// Cravat is an interface to inject a function while maintaining fashion
+// safety
 type Cravat interface {
-	Show(reflect.Value, []reflect.Value) []reflect.Value // Code to execute before
+	Show(reflect.Value, []reflect.Value) []reflect.Value // Code to execute with function
 }
 
 // PutCravat implements the decorator
