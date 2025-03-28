@@ -3,8 +3,8 @@ package main
 import "reflect"
 
 // Cravat sets a code block to be run before a call, and one for afterwords
-type Cravat struct {
-	Show func(reflect.Value, []reflect.Value) []reflect.Value // Code to execute before
+type Cravat interface {
+	Show(reflect.Value, []reflect.Value) []reflect.Value // Code to execute before
 }
 
 // PutCravat implements the decorator

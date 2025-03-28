@@ -7,16 +7,18 @@ import (
 	"time"
 )
 
-// A timing decorator
-var timingDecorator = Cravat{
-	Show: func(fn reflect.Value, args []reflect.Value) []reflect.Value {
-		start := time.Now()
-		result := fn.Call(args)
-		duration := time.Since(start)
-		fmt.Printf("it took %v\n", duration)
-		return result
-	},
+type TimingDecorator struct{}
+
+func (t TimingDecorator) Show(fn reflect.Value, args []reflect.Value) []reflect.Value {
+	start := time.Now()
+	result := fn.Call(args)
+	duration := time.Since(start)
+	fmt.Printf("it took %v\n", duration)
+	return result
 }
+
+// A timing decorator
+var timingDecorator = TimingDecorator{}
 
 // SliceWithSleep creates slice of n+1 elements from [0, n]
 func SliceWithSleep(n int) []int {
@@ -35,6 +37,7 @@ func main() {
 	// Call the decorated function
 	res := decoratedGenAndSortBigArrayOfInt(2025)
 	fmt.Println("SimplerTimer: ", len(res), res[len(res)-1])
+	fmt.Printf("\n\n")
 
 	decoratedGenAndSortBigArrayOfInt, ok = PutCravat(timingDecorator, SliceWithSleep)
 
@@ -45,6 +48,7 @@ func main() {
 	// Call the decorated function
 	res = decoratedGenAndSortBigArrayOfInt(2025)
 	fmt.Println("Cravat", len(res), res[len(res)-1])
+	fmt.Printf("\n\n")
 
 	decoratedGenAndSortBigArrayOfInt, ok = SimplerTimerAddExtra(SliceWithSleep, 500)
 
