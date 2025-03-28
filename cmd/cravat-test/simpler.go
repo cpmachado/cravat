@@ -20,7 +20,8 @@ func SimplerTimer[T interface{}](fn T) (T, bool) {
 	}).Interface().(T)), true
 }
 
-func SimplerTimerAddExtra[T interface{}](fn T, extra int) (T, bool) {
+func SimplerTimerAddExtra[T interface{}](fn T) (T, bool) {
+	extra := 42
 	fnValue, fnType := reflect.ValueOf(fn), reflect.TypeOf(fn)
 	if fnType.Kind() != reflect.Func {
 		return fn, false

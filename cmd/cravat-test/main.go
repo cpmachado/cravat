@@ -31,34 +31,21 @@ func MakeSliceN(n int) []int {
 	return append(result, n)
 }
 
-func main() {
-	decoratedFunc, ok := SimplerTimer(MakeSliceN)
+func DecoratedTest[T func(func(int) []int) (func(int) []int, bool)](name string, f T) {
+	decoratedFunc, ok := f(MakeSliceN)
 	if !ok {
-		slog.Error("main/decorator", slog.String("error", "Failed to set decorator"))
+		slog.Error("main/decorator", slog.String("func", name), slog.String("error", "Failed to set decorator"))
 	}
+	fmt.Printf("---------------------\n")
 	// Call the decorated function
 	res := decoratedFunc(2025)
-	fmt.Println("SimplerTimer: ", len(res), res[len(res)-1])
-	fmt.Printf("\n\n")
+	fmt.Printf("%s: %d, %d\n", name, len(res), res[len(res)-1])
+}
 
-	decoratedFunc, ok = cravat.PutCravat(timingDecorator, MakeSliceN)
-
-	if !ok {
-		slog.Error("main/decorator", slog.String("error", "Failed to set decorator"))
-	}
-
-	// Call the decorated function
-	res = decoratedFunc(2025)
-	fmt.Println("Cravat", len(res), res[len(res)-1])
-	fmt.Printf("\n\n")
-
-	decoratedFunc, ok = SimplerTimerAddExtra(MakeSliceN, 500)
-
-	if !ok {
-		slog.Error("main/decorator", slog.String("error", "Failed to set decorator"))
-	}
-
-	// Call the decorated function
-	res = decoratedFunc(2025)
-	fmt.Println("SimplerTimerAddExtra", len(res), res[len(res)-1])
+func main() {
+	DecoratedTest("SimplerTimer", SimplerTimer)
+	DecoratedTest("Cravat", func(f func(int) []int) (func(int) []int, bool) {
+		return cravat.PutCravat(timingDecorator, f)
+	})
+	DecoratedTest("SimplerTimerAddExtra", SimplerTimerAddExtra)
 }
