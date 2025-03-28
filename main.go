@@ -3,19 +3,18 @@ package main
 import (
 	"fmt"
 	"log/slog"
+	"reflect"
 	"time"
 )
 
 // A timing decorator
 var timingDecorator = Cravat{
-	Before: func() interface{} {
-		v := time.Now()
-		return v
-	},
-	After: func(start interface{}) {
-		rStart := start.(time.Time)
-		duration := time.Since(rStart)
+	Show: func(fn reflect.Value, args []reflect.Value) []reflect.Value {
+		start := time.Now()
+		result := fn.Call(args)
+		duration := time.Since(start)
 		fmt.Printf("it took %v\n", duration)
+		return result
 	},
 }
 
@@ -35,7 +34,7 @@ func main() {
 	}
 	// Call the decorated function
 	res := decoratedGenAndSortBigArrayOfInt(2025)
-	fmt.Println(len(res), res[len(res)-1])
+	fmt.Println("SimplerTimer: ", len(res), res[len(res)-1])
 
 	decoratedGenAndSortBigArrayOfInt, ok = PutCravat(timingDecorator, SliceWithSleep)
 
@@ -45,7 +44,7 @@ func main() {
 
 	// Call the decorated function
 	res = decoratedGenAndSortBigArrayOfInt(2025)
-	fmt.Println(len(res), res[len(res)-1])
+	fmt.Println("Cravat", len(res), res[len(res)-1])
 
 	decoratedGenAndSortBigArrayOfInt, ok = SimplerTimerAddExtra(SliceWithSleep, 500)
 
@@ -55,5 +54,5 @@ func main() {
 
 	// Call the decorated function
 	res = decoratedGenAndSortBigArrayOfInt(2025)
-	fmt.Println(len(res), res[len(res)-1])
+	fmt.Println("SimplerTimerAddExtra", len(res), res[len(res)-1])
 }
